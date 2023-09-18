@@ -9,9 +9,17 @@ export const DELETE = (url: string) => fetcher(url, "DELETE");
 
 export async function fetcher<T = any>(url: string, method: VALID_METHODS = "GET", data?: any) {
     return new Promise<T>(async (resolve, reject) => {
+        const TOKEN = localStorage.getItem("token");
+
         const fetchOptions: RequestInit = {
             method,
         };
+
+        if (TOKEN) {
+            fetchOptions["headers"] = {
+                Authorization: `Bearer ${TOKEN}`,
+            };
+        }
 
         if (method === "POST" || method === "PUT") {
             fetchOptions["headers"] = {
