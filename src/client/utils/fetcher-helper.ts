@@ -13,20 +13,18 @@ export async function fetcher<T = any>(url: string, method: VALID_METHODS = "GET
 
         const fetchOptions: RequestInit = {
             method,
+            headers: {},
         };
 
+        if (!fetchOptions["headers"]) throw new Error("How did this happen????");
+
         if (TOKEN) {
-            fetchOptions["headers"] = {
-                Authorization: `Bearer ${TOKEN}`,
-            };
+            fetchOptions["headers"]["Authorization"] = `Bearer ${TOKEN}`;
         }
 
         if (method === "POST" || method === "PUT") {
-            fetchOptions["headers"] = {
-                "Content-Type": "application/json",
-            };
-
-            fetchOptions["body"] = JSON.stringify(data);
+            (fetchOptions["headers"]["Content-Type"] = "application/json"),
+                (fetchOptions["body"] = JSON.stringify(data));
         }
 
         try {
