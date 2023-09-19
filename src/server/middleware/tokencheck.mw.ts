@@ -7,7 +7,7 @@ export function tokenCheck(req: Request, res: Response, next: NextFunction) {
             return next(err);
         }
 
-        if (!info) {
+        if (info) {
             return res.status(401).json({ message: info.message });
         }
 
@@ -17,5 +17,5 @@ export function tokenCheck(req: Request, res: Response, next: NextFunction) {
 
         req.user = user;
         next();
-    });
+    })(req, res, next);
 }
