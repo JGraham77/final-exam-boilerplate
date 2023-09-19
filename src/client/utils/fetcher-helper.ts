@@ -7,24 +7,29 @@ export const POST = (url: string, data: any) => fetcher(url, "POST", data);
 export const PUT = (url: string, data: any) => fetcher(url, "PUT", data);
 export const DELETE = (url: string) => fetcher(url, "DELETE");
 
+interface WorkableRequestInit {
+    method: string;
+    headers: { [key: string]: any };
+    body?: string;
+}
+
 export async function fetcher<T = any>(url: string, method: VALID_METHODS = "GET", data?: any) {
     return new Promise<T>(async (resolve, reject) => {
         const TOKEN = localStorage.getItem("token");
 
-        const fetchOptions: RequestInit = {
+        const headers: { [key: string]: any } = {};
+        const fetchOptions: WorkableRequestInit = {
             method,
-            headers: {},
+            headers,
         };
 
-        if (!fetchOptions["headers"]) throw new Error("How did this happen????");
-
         if (TOKEN) {
-            fetchOptions["headers"]["Authorization"] = `Bearer ${TOKEN}`;
+            fetchOptions["headers"]!["Authorization"] = `Bearer ${TOKEN}`;
         }
 
         if (method === "POST" || method === "PUT") {
-            (fetchOptions["headers"]["Content-Type"] = "application/json"),
-                (fetchOptions["body"] = JSON.stringify(data));
+            fetchOptions["headers"]!["Content-Type"] = "application/json";
+            fetchOptions["body"] = JSON.stringify(data);
         }
 
         try {
